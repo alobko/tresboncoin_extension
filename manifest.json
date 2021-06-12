@@ -1,0 +1,15 @@
+{
+  "name": "Le très bon coin",
+  "description": "🦆 🦆 🦆",
+  "version": "1.0",
+  "manifest_version": 3,
+  "content_scripts": [
+    {
+      "matches": [
+        "http://www.moto-selection.com/moto-occasion/*"
+      ],
+      "js": ["content_script.js"]
+    }
+  ],
+  "permissions": ["tabs", "storage", "activeTab", "scripting"]
+}
