@@ -27,11 +27,39 @@ function inject_css_content() {
           position: absolute;
         }
 
+        .card-product-infos {
+            width: 100%;
+        }
+
+        .card-product-infos h2 .ltbc_brand {
+            font-size: 20px;
+        }
+
+        .card-product-infos h2 .ltbc_model {
+            font-size: 16px;
+        }
+
+        .card-product-infos .ltbc_desc {
+            color: #111;
+            font-size: 16px;
+            font-family: helvetica,verdana,arial,sans-serif;
+            text-align: left;
+        }
+
+        .card-product-infos .ltbc_desc.ltbc_desc_right {
+            display: flex;
+            text-align: right !important;
+            justify-content: flex-end;
+            color: #ccc;
+            font-size: 14px;
+        }
+
         /* le wagon card */
 
         .card-product {
           overflow: hidden;
           height: 120px;
+          width: 400px;
           background: white;
           box-shadow: 0 0 15px rgba(0,0,0,0.2);
           display: flex;
@@ -92,8 +120,13 @@ function inject_html_content(e, jsonResponse, ad) {
         <div class="card-product">
           <img src="${ad.image}" />
           <div class="card-product-infos">
-            <h2>${ad.brand} ${ad.model}</h2>
-            <p>Predicted value: <strong>${price}</strong>.</p>
+            <h2>
+                <span class="ltbc_brand">${ad.brand} </span>
+                <span class="ltbc_model">${ad.model}</span>
+            </h2>
+            <p class="ltbc_desc">Predicted value: ${price}</p>
+            <p class="ltbc_desc">Grade: ${grade}</p>
+            <p class="ltbc_desc ltbc_desc_right">🏍 Le Très Bon Coin</p>
           </div>
         </div>
       </div>
