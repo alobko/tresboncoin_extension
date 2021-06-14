@@ -103,18 +103,18 @@ function inject_html_content(e, jsonResponse, ad) {
   `;
 
   // inject content
-  e.querySelector(".item_price").insertAdjacentHTML("beforeend", html);
+  e.querySelector('.item_price').insertAdjacentHTML('beforeend', html);
 }
 
 function make_prediction() {
 
   // select all of the ads
-  document.querySelectorAll(".announces_list_item").forEach(e => {
+  document.querySelectorAll('.announces_list_item').forEach(e => {
 
     // retrieve the elements of the ad
-    const mileage = e.getElementsByClassName("item_desc_km")[0].innerText.replace(' Km', '').replace(' ', '');
-    const cylinders = e.getElementsByClassName("item_desc_cylindre")[0].innerText.replace(' cm3', '');
-    const bike_year = e.getElementsByClassName("item_desc_millesime")[0].innerText.replace('Année ', '');
+    const mileage = e.getElementsByClassName('item_desc_km')[0].innerText.replace(' Km', '').replace(' ', '');
+    const cylinders = e.getElementsByClassName('item_desc_cylindre')[0].innerText.replace(' cm3', '');
+    const bike_year = e.getElementsByClassName('item_desc_millesime')[0].innerText.replace('Année ', '');
     const brand = e.querySelector('span[itemprop="brand"]').innerText.toLowerCase();
     const model = e.querySelector('span[itemprop="name"]').innerText.toLowerCase();
     const price = e.querySelector('span[itemprop="price"]').innerText.replace(' ', '');
