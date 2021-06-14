@@ -13,24 +13,68 @@ window.onload = function() {
 function inject_css_content() {
 
   // create content
-  css = `
+  const css = `
     <style>
-        .ltbc_price {
-            color: #333;
+
+        /* le très bon coin hover */
+
+        .ltbc_pred_hidden {
+          display: none;
+        }
+
+        .ltbc_pred:hover .ltbc_pred_hidden {
+          display: block;
+          position: absolute;
+        }
+
+        /* le wagon card */
+
+        .card-product {
+          overflow: hidden;
+          height: 120px;
+          background: white;
+          box-shadow: 0 0 15px rgba(0,0,0,0.2);
+          display: flex;
+          align-items: center;
+        }
+
+        .card-product img {
+          height: 100%;
+          width: 120px;
+          object-fit: cover;
+        }
+
+        .card-product h2 {
+          font-size: 16px;
+          font-weight: bold;
+          margin: 0;
+        }
+
+        .card-product p {
+          font-size: 12px;
+          line-height: 1.4;
+          opacity: .7;
+          margin-bottom: 0;
+          margin-top: 8px;
+        }
+
+        .card-product .card-product-infos {
+          padding: 16px;
         }
     </style>
   `;
 
   // inject content
-  document.body.insertAdjacentHTML("afterbegin", css);
+  document.body.insertAdjacentHTML("beforeend", css);
 }
 
-function inject_html_content(e, jsonResponse) {
+function inject_html_content(e, jsonResponse, ad) {
 
   // retrieve response price
-  price = jsonResponse.price
+  const price = jsonResponse.price
 
   // building grade
+  let grade = ""
   if (price < 25) {
     grade = "🥶 🥶 🥶";
   } else if (price < 50) {
@@ -42,10 +86,19 @@ function inject_html_content(e, jsonResponse) {
   }
 
   // create content
-  html = `
+  const html = `
     <div class="ltbc_pred">
-        <span class="ltbc_grade">${grade}</span>
-        <span class="ltbc_price">${jsonResponse.price}</span>
+      <div class="ltbc_pred_hidden">
+        <div class="card-product">
+          <img src="https://raw.githubusercontent.com/lewagon/fullstack-images/master/uikit/skateboard.jpg" />
+          <div class="card-product-infos">
+            <h2>${ad.brand} ${ad.model}</h2>
+            <p>Predicted value: <strong>${price}</strong>.</p>
+          </div>
+        </div>
+      </div>
+      <span class="ltbc_grade">${grade}</span>
+      <span class="ltbc_price">${jsonResponse.price}</span>
     </div>
   `;
 
@@ -59,19 +112,30 @@ function make_prediction() {
   document.querySelectorAll(".announces_list_item").forEach(e => {
 
     // retrieve the elements of the ad
-    mileage = e.getElementsByClassName("item_desc_km")[0].innerText.replace(' Km', '').replace(' ', '');
-    cylinders = e.getElementsByClassName("item_desc_cylindre")[0].innerText.replace(' cm3', '');
-    bike_year = e.getElementsByClassName("item_desc_millesime")[0].innerText.replace('Année ', '');
-    brand = e.querySelector('span[itemprop="brand"]').innerText.toLowerCase();
-    model = e.querySelector('span[itemprop="name"]').innerText.toLowerCase();
-    price = e.querySelector('span[itemprop="price"]').innerText.replace(' ', '');
-    id = e.querySelector('a.title_link.item_link').href.replace('.html', '').split('/').pop();
+    const mileage = e.getElementsByClassName("item_desc_km")[0].innerText.replace(' Km', '').replace(' ', '');
+    const cylinders = e.getElementsByClassName("item_desc_cylindre")[0].innerText.replace(' cm3', '');
+    const bike_year = e.getElementsByClassName("item_desc_millesime")[0].innerText.replace('Année ', '');
+    const brand = e.querySelector('span[itemprop="brand"]').innerText.toLowerCase();
+    const model = e.querySelector('span[itemprop="name"]').innerText.toLowerCase();
+    const price = e.querySelector('span[itemprop="price"]').innerText.replace(' ', '');
+    const id = e.querySelector('a.title_link.item_link').href.replace('.html', '').split('/').pop();
+
+    // build ad object
+    const ad = {
+      mileage: mileage,
+      cylinders: cylinders,
+      bike_year: bike_year,
+      brand: brand,
+      model: model,
+      price: price,
+      id: id,
+    };
 
     // print ad content
     console.log(mileage, cylinders, bike_year, brand, model, price, id);
 
     // build api request
-    url = `http://localhost:8000/predict?mileage=${mileage}&cylinders=${cylinders}&bike_year=${bike_year}&brand=${brand}&model=${model}&price=${price}&id=${id}`;
+    const url = `http://localhost:8000/predict?mileage=${mileage}&cylinders=${cylinders}&bike_year=${bike_year}&brand=${brand}&model=${model}&price=${price}&id=${id}`;
     console.log(url);
 
     // retrieve prediction from api
@@ -93,7 +157,7 @@ function make_prediction() {
     }).then(jsonResponse => {
 
       // inject content
-      inject_html_content(e, jsonResponse);
+      inject_html_content(e, jsonResponse, ad);
     });
   });
 }
