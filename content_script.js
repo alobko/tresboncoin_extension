@@ -7,6 +7,14 @@ window.onload = function() {
   console.log("👍 👍 👍 done")
 }
 
+function inject_content(e, jsonResponse) {
+
+  // retrieve response price
+  price = jsonResponse.price
+
+  // inject content
+  e.querySelector(".item_price").insertAdjacentHTML("beforeend", `<li>🔥 ${jsonResponse.price} 🙏</li>`);
+}
 
 function make_prediction() {
 
@@ -47,11 +55,8 @@ function make_prediction() {
       console.log(networkError.message);
     }).then(jsonResponse => {
 
-      // retrieve response price
-      price = jsonResponse.price
-
       // inject content
-      e.querySelector(".item_price").insertAdjacentHTML("beforeend", `<li>🔥 ${jsonResponse.price} 🔥</li>`);
+      inject_content(e, jsonResponse);
     });
   });
 }
