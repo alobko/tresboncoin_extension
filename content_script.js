@@ -12,8 +12,19 @@ function inject_content(e, jsonResponse) {
   // retrieve response price
   price = jsonResponse.price
 
+  // building grade
+  if (price < 25) {
+    grade = "🥶 🥶 🥶";
+  } else if (price < 50) {
+    grade = "🥶";
+  } else if (price < 75) {
+    grade = "🔥";
+  } else {
+    grade = "🔥 🔥 🔥";
+  }
+
   // inject content
-  e.querySelector(".item_price").insertAdjacentHTML("beforeend", `<li>🔥 ${jsonResponse.price} 🙏</li>`);
+  e.querySelector(".item_price").insertAdjacentHTML("beforeend", `<span>${grade} ${jsonResponse.price}</span>`);
 }
 
 function make_prediction() {
