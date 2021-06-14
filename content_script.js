@@ -90,7 +90,7 @@ function inject_html_content(e, jsonResponse, ad) {
     <div class="ltbc_pred">
       <div class="ltbc_pred_hidden">
         <div class="card-product">
-          <img src="https://raw.githubusercontent.com/lewagon/fullstack-images/master/uikit/skateboard.jpg" />
+          <img src="${ad.image}" />
           <div class="card-product-infos">
             <h2>${ad.brand} ${ad.model}</h2>
             <p>Predicted value: <strong>${price}</strong>.</p>
@@ -119,6 +119,7 @@ function make_prediction() {
     const model = e.querySelector('span[itemprop="name"]').innerText.toLowerCase();
     const price = e.querySelector('span[itemprop="price"]').innerText.replace(' ', '');
     const id = e.querySelector('a.title_link.item_link').href.replace('.html', '').split('/').pop();
+    const image = e.querySelector('.img_content img').src;
 
     // build ad object
     const ad = {
@@ -129,13 +130,14 @@ function make_prediction() {
       model: model,
       price: price,
       id: id,
+      image: image,
     };
 
     // print ad content
-    console.log(mileage, cylinders, bike_year, brand, model, price, id);
+    console.log(mileage, cylinders, bike_year, brand, model, price, id, image);
 
     // build api request
-    const url = `http://localhost:8000/predict?mileage=${mileage}&cylinders=${cylinders}&bike_year=${bike_year}&brand=${brand}&model=${model}&price=${price}&id=${id}`;
+    const url = `http://localhost:8000/predict?mileage=${mileage}&cylinders=${cylinders}&bike_year=${bike_year}&brand=${brand}&model=${model}&price=${price}&id=${id}&image=${image}`;
     console.log(url);
 
     // retrieve prediction from api
