@@ -5,9 +5,9 @@ window.onload = function() {
   inject_css_content();
 
   // run predictions for all of the ads
-  console.log("👉 👉 👉 make predictions")
+  console.log('👉 👉 👉 make predictions')
   make_prediction();
-  console.log("👍 👍 👍 done")
+  console.log('👍 👍 👍 done')
 }
 
 function inject_css_content() {
@@ -65,7 +65,7 @@ function inject_css_content() {
   `;
 
   // inject content
-  document.body.insertAdjacentHTML("beforeend", css);
+  document.body.insertAdjacentHTML('beforeend', css);
 }
 
 function inject_html_content(e, jsonResponse, ad) {
@@ -74,15 +74,15 @@ function inject_html_content(e, jsonResponse, ad) {
   const price = jsonResponse.price
 
   // building grade
-  let grade = ""
+  let grade = ''
   if (price < 25) {
-    grade = "🥶 🥶 🥶";
+    grade = '🥶 🥶 🥶';
   } else if (price < 50) {
-    grade = "🥶";
+    grade = '🥶';
   } else if (price < 75) {
-    grade = "🔥";
+    grade = '🔥';
   } else {
-    grade = "🔥 🔥 🔥";
+    grade = '🔥 🔥 🔥';
   }
 
   // create content
