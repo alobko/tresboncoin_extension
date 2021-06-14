@@ -1,13 +1,31 @@
 
 window.onload = function() {
 
+  // inject css for the page
+  inject_css_content();
+
   // run predictions for all of the ads
   console.log("👉 👉 👉 make predictions")
   make_prediction();
   console.log("👍 👍 👍 done")
 }
 
-function inject_content(e, jsonResponse) {
+function inject_css_content() {
+
+  // create content
+  css = `
+    <style>
+        .ltbc_price {
+            color: #333;
+        }
+    </style>
+  `;
+
+  // inject content
+  document.body.insertAdjacentHTML("afterbegin", css);
+}
+
+function inject_html_content(e, jsonResponse) {
 
   // retrieve response price
   price = jsonResponse.price
@@ -23,8 +41,16 @@ function inject_content(e, jsonResponse) {
     grade = "🔥 🔥 🔥";
   }
 
+  // create content
+  html = `
+    <div class="ltbc_pred">
+        <span class="ltbc_grade">${grade}</span>
+        <span class="ltbc_price">${jsonResponse.price}</span>
+    </div>
+  `;
+
   // inject content
-  e.querySelector(".item_price").insertAdjacentHTML("beforeend", `<span>${grade} ${jsonResponse.price}</span>`);
+  e.querySelector(".item_price").insertAdjacentHTML("beforeend", html);
 }
 
 function make_prediction() {
@@ -67,7 +93,7 @@ function make_prediction() {
     }).then(jsonResponse => {
 
       // inject content
-      inject_content(e, jsonResponse);
+      inject_html_content(e, jsonResponse);
     });
   });
 }
