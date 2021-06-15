@@ -96,7 +96,7 @@ function inject_css_content() {
   document.body.insertAdjacentHTML('beforeend', css);
 }
 
-function inject_html_content(e, jsonResponse, ad) {
+function inject_html_content(e, site_name, jsonResponse, ad) {
 
   // retrieve response price
   const price = jsonResponse.price
@@ -136,63 +136,117 @@ function inject_html_content(e, jsonResponse, ad) {
   `;
 
   // inject content
-  e.querySelector('.item_price').insertAdjacentHTML('beforeend', html);
+  if (site_name == "moto_selection") {
+
+    e.querySelector('.item_price').insertAdjacentHTML('beforeend', html);
+
+  } else if (site_name == "lbc") {
+
+    e.querySelector('.sc-bdVaJa').insertAdjacentHTML('beforeend', html);
+
+  }
+}
+
+function call_api(e,site_name, mileage, cylinders, bike_year, brand, model, price, id, image) {
+
+  // build ad object
+  const ad = {
+    mileage: mileage,
+    cylinders: cylinders,
+    bike_year: bike_year,
+    brand: brand,
+    model: model,
+    price: price,
+    id: id,
+    image: image,
+  };
+
+  // print ad content
+  console.log(mileage, cylinders, bike_year, brand, model, price, id, image);
+
+  // build api request
+  const url = `http://localhost:8000/predict?mileage=${mileage}&cylinders=${cylinders}&bike_year=${bike_year}&brand=${brand}&model=${model}&price=${price}&id=${id}&image=${image}`;
+  console.log(url);
+
+  // retrieve prediction from api
+  fetch(url).then(response => {
+
+    // check whether request is ok
+    if (response.ok === true) {
+      return response.json();
+    }
+
+    // log request error
+    console.log(response);
+    throw new Error('Request failed!');
+  }, networkError => {
+
+    // log network error
+    console.log(response);
+    console.log(networkError.message);
+  }).then(jsonResponse => {
+
+    // inject content
+    inject_html_content(e, site_name, jsonResponse, ad);
+  });
 }
 
 function make_prediction() {
 
-  // select all of the ads
-  document.querySelectorAll('.announces_list_item').forEach(e => {
+  // check website
+  if (location.hostname == "www.moto-selection.com") {
 
-    // retrieve the elements of the ad
-    const mileage = e.getElementsByClassName('item_desc_km')[0].innerText.replace(' Km', '').replace(' ', '');
-    const cylinders = e.getElementsByClassName('item_desc_cylindre')[0].innerText.replace(' cm3', '');
-    const bike_year = e.getElementsByClassName('item_desc_millesime')[0].innerText.replace('Année ', '');
-    const brand = e.querySelector('span[itemprop="brand"]').innerText.toLowerCase();
-    const model = e.querySelector('span[itemprop="name"]').innerText.toLowerCase();
-    const price = e.querySelector('span[itemprop="price"]').innerText.replace(' ', '');
-    const id = e.querySelector('a.title_link.item_link').href.replace('.html', '').split('/').pop();
-    const image = e.querySelector('.img_content img').src;
+    console.log("☘️ moto selection");
+    site_name = "moto_selection";
 
-    // build ad object
-    const ad = {
-      mileage: mileage,
-      cylinders: cylinders,
-      bike_year: bike_year,
-      brand: brand,
-      model: model,
-      price: price,
-      id: id,
-      image: image,
-    };
+    // select all of the ads
+    document.querySelectorAll('.announces_list_item').forEach(e => {
 
-    // print ad content
-    console.log(mileage, cylinders, bike_year, brand, model, price, id, image);
+      // retrieve the elements of the ad
+      const mileage = e.getElementsByClassName('item_desc_km')[0].innerText.replace(' Km', '').replace(' ', '');
+      const cylinders = e.getElementsByClassName('item_desc_cylindre')[0].innerText.replace(' cm3', '');
+      const bike_year = e.getElementsByClassName('item_desc_millesime')[0].innerText.replace('Année ', '');
+      const brand = e.querySelector('span[itemprop="brand"]').innerText.toLowerCase();
+      const model = e.querySelector('span[itemprop="name"]').innerText.toLowerCase();
+      const price = e.querySelector('span[itemprop="price"]').innerText.replace(' ', '');
+      const id = e.querySelector('a.title_link.item_link').href.replace('.html', '').split('/').pop();
+      const image = e.querySelector('.img_content img').src;
 
-    // build api request
-    const url = `http://localhost:8000/predict?mileage=${mileage}&cylinders=${cylinders}&bike_year=${bike_year}&brand=${brand}&model=${model}&price=${price}&id=${id}&image=${image}`;
-    console.log(url);
+      // call the api then inject the card
+      call_api(e, site_name, mileage, cylinders, bike_year, brand, model, price, id, image)
 
-    // retrieve prediction from api
-    fetch(url).then(response => {
-
-      // check whether request is ok
-      if (response.ok === true) {
-        return response.json();
-      }
-
-      // log request error
-      console.log(response);
-      throw new Error('Request failed!');
-    }, networkError => {
-
-      // log network error
-      console.log(response);
-      console.log(networkError.message);
-    }).then(jsonResponse => {
-
-      // inject content
-      inject_html_content(e, jsonResponse, ad);
     });
-  });
+
+  } else if (location.hostname == "www.leboncoin.fr") {
+
+    console.log("☘️ le bon coin");
+    site_name = "lbc";
+
+    // lbc
+    document.querySelectorAll('.styles_adCard__2YFTi').forEach(e => {
+
+      // retrieve the elements of the ad
+      const mileage = "todo";
+      const cylinders = "todo";
+      const bike_year = "todo";
+      const brand = "todo";
+      const model = "todo";
+      const price = e.getElementsByClassName('_1hnil')[0].innerText;
+      const id = "todo";
+      const image = "todo";
+
+      console.log(`❤️ ❤️ ❤️ prix ${price}`)
+
+      // call the api then inject the card
+      call_api(e, site_name, mileage, cylinders, bike_year, brand, model, price, id, image)
+
+    });
+
+  } else {
+
+    console.log("🚨 erreur de site");
+
+    return;
+  }
+
 }

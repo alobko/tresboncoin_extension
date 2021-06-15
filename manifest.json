@@ -6,7 +6,11 @@
   "content_scripts": [
     {
       "matches": [
-        "http://www.moto-selection.com/moto-occasion/*"
+        "http://www.moto-selection.com/moto-occasion/*",
+        "https://www.leboncoin.fr/*",
+        "http://www.leboncoin.fr/*",
+        "https://leboncoin.fr/*",
+        "http://leboncoin.fr/*"
       ],
       "js": ["content_script.js"]
     }
