@@ -112,12 +112,8 @@ function inject_html_content(e, site_name, jsonResponse, ad) {
 
   // building grade
   let grade = ''
-  if (price < 25) {
+  if (jsonResponse.deal != "Good") {
     grade = '🥶 🥶 🥶';
-  } else if (price < 50) {
-    grade = '🥶';
-  } else if (price < 75) {
-    grade = '🔥';
   } else {
     grade = '🔥 🔥 🔥';
   }
@@ -140,7 +136,7 @@ function inject_html_content(e, site_name, jsonResponse, ad) {
         </div>
       </div>
       <span class="ltbc_grade">${grade}</span>
-      <span class="ltbc_price">${jsonResponse.price}</span>
+      <span class="ltbc_price">${jsonResponse.predicted_price}</span>
     </div>
   `;
 
@@ -159,7 +155,7 @@ function inject_html_content(e, site_name, jsonResponse, ad) {
   }
 }
 
-function call_api(e,site_name, mileage, cylinders, bike_year, brand, model, price, id, image) {
+function call_api(e,site_name, mileage, cylinders, bike_year, brand, model, price, id, image, title) {
 
   // build ad object
   const ad = {
@@ -171,17 +167,21 @@ function call_api(e,site_name, mileage, cylinders, bike_year, brand, model, pric
     price: price,
     id: id,
     image: image,
+    title: title,
   };
 
   // print ad content
-  console.log(mileage, cylinders, bike_year, brand, model, price, id, image);
+  console.log(mileage, cylinders, bike_year, brand, model, price, id, image, title);
 
   // build api request
-  const url = `http://localhost:8000/predict?mileage=${mileage}&cylinders=${cylinders}&bike_year=${bike_year}&brand=${brand}&model=${model}&price=${price}&id=${id}&image=${image}`;
+  // const url = `http://localhost:8000/predict?mileage=${mileage}&cylinders=${cylinders}&bike_year=${bike_year}&brand=${brand}&model=${model}&price=${price}&id=${id}&image=${image}`;
+  const url = `https://tresboncoin-jteax5jyaq-ew.a.run.app/predict_price?mileage_=${mileage}&cc_=${cylinders}&year_=${bike_year}&brand_=${brand}&model_=${model}&price_=${price}&uniq_id_=${id}&image_=${image}&title_=${title}`;
   console.log(url);
 
   // retrieve prediction from api
-  fetch(url).then(response => {
+  fetch(url, {
+    mode: "cors",
+  }).then(response => {
 
     // check whether request is ok
     if (response.ok === true) {
@@ -224,9 +224,10 @@ function make_prediction() {
       const id = e.querySelector('a.title_link.item_link').href.replace('.html', '').split('/').pop();
       const image_element = e.querySelector('.img_content img');
       const image = image_element ? image_element.src : '';
+      const title = "0";
 
       // call the api then inject the card
-      call_api(e, site_name, mileage, cylinders, bike_year, brand, model, price, id, image)
+      call_api(e, site_name, mileage, cylinders, bike_year, brand, model, price, id, image, title)
 
     });
 
@@ -255,11 +256,12 @@ function make_prediction() {
         const id = idElt ? idElt.id : '';
         const image_element = e.querySelector('.searchCard__leftContainer img');
         const image = image_element && image_element != "" ? image_element.src : '';
+        const title = "0";
 
         console.log(`❤️ ❤️ ❤️ mileage ${mileage} cylinders ${cylinders} bike_year ${bike_year} brand ${brand} model ${model} price ${price} id ${id} image ${image}`)
 
         // call the api then inject the card
-        call_api(e, site_name, mileage, cylinders, bike_year, brand, model, price, id, image)
+        call_api(e, site_name, mileage, cylinders, bike_year, brand, model, price, id, image, title)
 
       }, 3000);
 
@@ -283,11 +285,12 @@ function make_prediction() {
       const id = e.querySelector('a.AdCard__AdCardLink-sc-1h74x40-0.XFxsO').href.replace('.htm*', '').split('/').pop();      
       const image_element = e.querySelector('.indexstyles__WithLayoutCondition-teq0ic-0.jtKicE img');
       const image = image_element ? image_element.src : '';
+      const title = "0";
 
       console.log(`❤️ ❤️ ❤️ prix ${price}`)
 
       // call the api then inject the card
-      call_api(e, site_name, mileage, cylinders, bike_year, brand, model, price, id, image)
+      call_api(e, site_name, mileage, cylinders, bike_year, brand, model, price, id, image, title)
 
     });
 
