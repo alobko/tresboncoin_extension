@@ -15,6 +15,16 @@ function inject_css_content() {
   const css = `
     <style>
 
+        .ltbc_grade,
+        .ltbc_price {
+          font-size: 20px;
+        }
+
+        /* moto services override */
+        .announces_list_item {
+          height: 183px !important;
+        }
+
         /* le très bon coin hover */
 
         .ltbc_pred_hidden {
