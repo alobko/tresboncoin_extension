@@ -111,6 +111,7 @@ function inject_html_content(e, site_name, jsonResponse, ad) {
   const price = jsonResponse.price
 
   // building grade
+  //correct version below
   let grade = ''
   if (jsonResponse.deal != "Good") {
     grade = '🥶 🥶 🥶';
@@ -129,14 +130,14 @@ function inject_html_content(e, site_name, jsonResponse, ad) {
                 <span class="ltbc_brand">${ad.brand} </span>
                 <span class="ltbc_model">${ad.model}</span>
             </h2>
-            <p class="ltbc_desc">Predicted value: ${price}</p>
+            <p class="ltbc_desc">Predicted value: ${Math.round(jsonResponse.predicted_price)}</p>
             <p class="ltbc_desc">Grade: ${grade}</p>
             <p class="ltbc_desc ltbc_desc_right">🏍 Le Très Bon Coin</p>
           </div>
         </div>
       </div>
       <span class="ltbc_grade">${grade}</span>
-      <span class="ltbc_price">${jsonResponse.predicted_price}</span>
+      <span class="ltbc_price">${Math.round(jsonResponse.predicted_price)}</span>
     </div>
   `;
 
