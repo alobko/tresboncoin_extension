@@ -10,7 +10,11 @@
         "https://www.leboncoin.fr/*",
         "http://www.leboncoin.fr/*",
         "https://leboncoin.fr/*",
-        "http://leboncoin.fr/*"
+        "http://leboncoin.fr/*",
+        "https://www.lacentrale.fr/*",
+        "http://www.lacentrale.fr/*",
+        "https://lacentrale.fr/*",
+        "http://lacentrale.fr/*"
       ],
       "js": ["content_script.js"]
     }

@@ -1,4 +1,3 @@
-
 window.onload = function() {
 
   // inject css for the page
@@ -138,12 +137,15 @@ function inject_html_content(e, site_name, jsonResponse, ad) {
   // inject content
   if (site_name == "moto_selection") {
 
-    e.querySelector('.item_price').insertAdjacentHTML('beforeend', html);
+    e.querySelector('.title_link').insertAdjacentHTML('afterbegin', html);
 
   } else if (site_name == "lbc") {
 
     e.querySelector('.sc-bdVaJa').insertAdjacentHTML('beforeend', html);
 
+  } else if (site_name == "la_centrale") {
+
+    e.querySelector('.searchCard__makeModel').insertAdjacentHTML('beforebegin', html);
   }
 }
 
@@ -210,10 +212,46 @@ function make_prediction() {
       const model = e.querySelector('span[itemprop="name"]').innerText.toLowerCase();
       const price = e.querySelector('span[itemprop="price"]').innerText.replace(' ', '');
       const id = e.querySelector('a.title_link.item_link').href.replace('.html', '').split('/').pop();
-      const image = e.querySelector('.img_content img').src;
+      const image_element = e.querySelector('.img_content img');
+      const image = image_element ? image_element.src : '';
 
       // call the api then inject the card
       call_api(e, site_name, mileage, cylinders, bike_year, brand, model, price, id, image)
+
+    });
+
+  } else if (location.hostname == "www.lacentrale.fr") {
+
+    console.log("☘️ la centrale");
+    site_name = "la_centrale";
+
+    // la_centrale
+    document.querySelectorAll('.adLineContainer').forEach(e => {
+
+      setTimeout(function() {
+
+        // retrieve the elements of the ad
+        const mileageElt = e.getElementsByClassName('searchCard__mileage')[0];
+        const mileage = mileageElt ? mileageElt.innerText.replace('km', '').replace(' ', '') : "";
+        const cylinders = "";
+        const bike_yearElt = e.getElementsByClassName('searchCard__year')[0];
+        const bike_year = bike_yearElt ? bike_yearElt.innerText.replace(' ', '') : "";
+        const brandElt = e.querySelector('span[class="searchCard__makeModel"]');
+        const brand = brandElt ? brandElt.innerText.toLowerCase() : "";
+        const model = "";
+        const priceElt = e.querySelector('.searchCard__fieldPrice span');
+        const price = priceElt ? priceElt.innerText : '';
+        const idElt = e.querySelector('a');
+        const id = idElt ? idElt.id : '';
+        const image_element = e.querySelector('.searchCard__leftContainer img');
+        const image = image_element && image_element != "" ? image_element.src : '';
+
+        console.log(`❤️ ❤️ ❤️ mileage ${mileage} cylinders ${cylinders} bike_year ${bike_year} brand ${brand} model ${model} price ${price} id ${id} image ${image}`)
+
+        // call the api then inject the card
+        call_api(e, site_name, mileage, cylinders, bike_year, brand, model, price, id, image)
+
+      }, 3000);
 
     });
 
@@ -223,17 +261,18 @@ function make_prediction() {
     site_name = "lbc";
 
     // lbc
-    document.querySelectorAll('.styles_adCard__2YFTi').forEach(e => {
+    document.querySelectorAll('.sc-bdVaJa').forEach(e => {
 
       // retrieve the elements of the ad
-      const mileage = "todo";
-      const cylinders = "todo";
-      const bike_year = "todo";
-      const brand = "todo";
-      const model = "todo";
-      const price = e.getElementsByClassName('_1hnil')[0].innerText;
-      const id = "todo";
-      const image = "todo";
+      const mileage = e.getElementsByClassName('AdParams__LightParams-sc-2j22za-1 fyMqhY').querySelector('span[class=Roh2X _137P- P4PEa _3j0OU]')[1].replace('km', '').replace(' ', '');
+      const cylinders = "";
+      const bike_year = e.getElementsByClassName('AdParams__LightParams-sc-2j22za-1 fyMqhY').querySelector('span[class=Roh2X _137P- P4PEa _3j0OU]')[0].replace(' ','');
+      const brand = e.getElementsByClassName('AdCardTitle-e546g7-0 igWjvr').innerText.toLowerCase();
+      const model = e.getElementsByClassName('AdCardTitle-e546g7-0 igWjvr').innerText;
+      const price = e.querySelector('span[class="_1hnil _1-TTU _35DXM"]').innerText.replace(' ','').replace('€','');
+      const id = e.querySelector('a.AdCard__AdCardLink-sc-1h74x40-0.XFxsO').href.replace('.htm*', '').split('/').pop();      
+      const image_element = e.querySelector('.indexstyles__WithLayoutCondition-teq0ic-0.jtKicE img');
+      const image = image_element ? image_element.src : '';
 
       console.log(`❤️ ❤️ ❤️ prix ${price}`)
 
