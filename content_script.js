@@ -105,15 +105,25 @@ function inject_css_content() {
   document.body.insertAdjacentHTML('beforeend', css);
 }
 
-function inject_html_content(e, site_name, jsonResponse, ad) {
+function inject_html_content(e, site_name, response, ad) {
 
   // retrieve response price
-  const price = jsonResponse.price
+  const response_predicted_price = response ? Math.floor(response.predicted_price) : '';
+  const response_deal = response ? response.deal : '';
+  const response_bike_year = response ? response.bike_year : '';
+  const response_engine_size = response ? response.engine_size : '';
+  const response_km_year = response ? response["km/year"] : '';
+  const response_mileage = response ? response.mileage : '';
+  const response_engine_size_db = response ? response.engine_size_db : '';
+  const response_brand_db = response ? response.brand_db : '';
+  const response_model_db = response ? response.model_db : '';
+
+  console.log(`predicted_price ${response_predicted_price} deal ${response_deal} bike_year ${response_bike_year} engine_size ${response_engine_size} km_year ${response_km_year} mileage ${response_mileage} engine_size_db ${response_engine_size_db} brand_db ${response_brand_db} model_db ${response_model_db}`);
 
   // building grade
   //correct version below
   let grade = ''
-  if (jsonResponse.deal != "Good") {
+  if (response_deal != "Good") {
     grade = '🥶 🥶 🥶';
   } else {
     grade = '🔥 🔥 🔥';
@@ -176,13 +186,15 @@ function call_api(e,site_name, mileage, cylinders, bike_year, brand, model, pric
 
   // build api request
   // const url = `http://localhost:8000/predict?mileage=${mileage}&cylinders=${cylinders}&bike_year=${bike_year}&brand=${brand}&model=${model}&price=${price}&id=${id}&image=${image}`;
-  const url = `https://tresboncoin-jteax5jyaq-ew.a.run.app/predict_price?mileage_=${mileage}&cc_=${cylinders}&year_=${bike_year}&brand_=${brand}&model_=${model}&price_=${price}&uniq_id_=${id}&image_=${image}&title_=${title}`;
+  // const url = "https://taxifare.lewagon.ai/predict?pickup_datetime=2020-01-01%2019%3A19%3A19&pickup_longitude=4&pickup_latitude=4&dropoff_longitude=4&dropoff_latitude=4&passenger_count=4"
+  // const url = `https://tresboncoin-jteax5jyaq-ew.a.run.app/`;
+  // const url = `https://tresboncoin-jteax5jyaq-ew.a.run.app/predict_price?mileage_=${mileage}&cc_=${cylinders}&year_=${bike_year}&brand_=${brand}&model_=${model}&price_=${price}&uniq_id_=${id}&image_=${image}&title_=${title}`;
+  // const url = "https://tresboncoin-jteax5jyaq-ew.a.run.app/predict_price?uniq_id_=123&brand_=honda&cc_=125&year_=2020&mileage_=12345&price_=12345&model_=sh&title_=honda%20sh%20125";
+  const url = `https://tresboncoin-jteax5jyaq-ew.a.run.app/predict_price?uniq_id_=${id}&brand_=${brand}&cc_=${cylinders}&year_=${bike_year}&mileage_=${mileage}&price_=${price}&model_=${model}&title_=${title}`;
   console.log(url);
 
   // retrieve prediction from api
-  fetch(url, {
-    mode: "cors",
-  }).then(response => {
+  fetch(url).then(response => {
 
     // check whether request is ok
     if (response.ok === true) {
@@ -195,12 +207,11 @@ function call_api(e,site_name, mileage, cylinders, bike_year, brand, model, pric
   }, networkError => {
 
     // log network error
-    console.log(response);
     console.log(networkError.message);
-  }).then(jsonResponse => {
+  }).then(response => {
 
     // inject content
-    inject_html_content(e, site_name, jsonResponse, ad);
+    inject_html_content(e, site_name, response, ad);
   });
 }
 
@@ -225,7 +236,7 @@ function make_prediction() {
       const id = e.querySelector('a.title_link.item_link').href.replace('.html', '').split('/').pop();
       const image_element = e.querySelector('.img_content img');
       const image = image_element ? image_element.src : '';
-      const title = "0";
+      const title = '';
 
       // call the api then inject the card
       call_api(e, site_name, mileage, cylinders, bike_year, brand, model, price, id, image, title)
@@ -244,20 +255,20 @@ function make_prediction() {
 
         // retrieve the elements of the ad
         const mileageElt = e.getElementsByClassName('searchCard__mileage')[0];
-        const mileage = mileageElt ? mileageElt.innerText.replace('km', '').replace(' ', '') : "";
-        const cylinders = "";
+        const mileage = mileageElt ? mileageElt.innerText.replace('km', '').replace(/\s/g, '') : '';
+        const cylinders = '';
         const bike_yearElt = e.getElementsByClassName('searchCard__year')[0];
-        const bike_year = bike_yearElt ? bike_yearElt.innerText.replace(' ', '') : "";
+        const bike_year = bike_yearElt ? bike_yearElt.innerText.replace(' ', '') : '';
         const brandElt = e.querySelector('span[class="searchCard__makeModel"]');
-        const brand = brandElt ? brandElt.innerText.toLowerCase() : "";
-        const model = "";
+        const brand = brandElt ? brandElt.innerText.toLowerCase().replace(/\s/g, ' ') : '';
+        const model = '';
         const priceElt = e.querySelector('.searchCard__fieldPrice span');
-        const price = priceElt ? priceElt.innerText : '';
+        const price = priceElt ? priceElt.innerText.replace('€', '').replace(/\s/g, '') : '';
         const idElt = e.querySelector('a');
         const id = idElt ? idElt.id : '';
         const image_element = e.querySelector('.searchCard__leftContainer img');
         const image = image_element && image_element != "" ? image_element.src : '';
-        const title = "0";
+        const title = '';
 
         console.log(`❤️ ❤️ ❤️ mileage ${mileage} cylinders ${cylinders} bike_year ${bike_year} brand ${brand} model ${model} price ${price} id ${id} image ${image}`)
 
@@ -278,7 +289,7 @@ function make_prediction() {
 
       // retrieve the elements of the ad
       const mileage = e.getElementsByClassName('AdParams__LightParams-sc-2j22za-1 fyMqhY').querySelector('span[class=Roh2X _137P- P4PEa _3j0OU]')[1].replace('km', '').replace(' ', '');
-      const cylinders = "";
+      const cylinders = '';
       const bike_year = e.getElementsByClassName('AdParams__LightParams-sc-2j22za-1 fyMqhY').querySelector('span[class=Roh2X _137P- P4PEa _3j0OU]')[0].replace(' ','');
       const brand = e.getElementsByClassName('AdCardTitle-e546g7-0 igWjvr').innerText.toLowerCase();
       const model = e.getElementsByClassName('AdCardTitle-e546g7-0 igWjvr').innerText;
@@ -286,7 +297,7 @@ function make_prediction() {
       const id = e.querySelector('a.AdCard__AdCardLink-sc-1h74x40-0.XFxsO').href.replace('.htm*', '').split('/').pop();      
       const image_element = e.querySelector('.indexstyles__WithLayoutCondition-teq0ic-0.jtKicE img');
       const image = image_element ? image_element.src : '';
-      const title = "0";
+      const title = '';
 
       console.log(`❤️ ❤️ ❤️ prix ${price}`)
 
