@@ -122,11 +122,23 @@ function inject_html_content(e, site_name, response, ad) {
 
   // building grade
   //correct version below
+  const price_diff = response_predicted_price - ad.price;
   let grade = ''
-  if (response_deal != "Good") {
-    grade = '🥶 🥶 🥶';
-  } else {
+  console.log(`price diff ${price_diff} pred ${response_predicted_price} price ${ad.price}`)
+  if (price_diff > 1000) {
     grade = '🔥 🔥 🔥';
+  } else if (price_diff > 100) {
+    grade = '🔥 🔥';
+  } else if (price_diff > 0) {
+    grade = '🔥';
+  } else if (price_diff == 0) {
+    grade = '😎 😎 😎';
+  } else if (price_diff < -1000) {
+    grade = '🥶 🥶 🥶';
+  } else if (price_diff < -500) {
+    grade = '🥶 🥶';
+  } else { // if (price_diff < 1000)
+    grade = '🥶';
   }
 
   // create content
@@ -140,14 +152,14 @@ function inject_html_content(e, site_name, response, ad) {
                 <span class="ltbc_brand">${ad.brand} </span>
                 <span class="ltbc_model">${ad.model}</span>
             </h2>
-            <p class="ltbc_desc">Predicted value: ${Math.round(jsonResponse.predicted_price)}</p>
+            <p class="ltbc_desc">Predicted value: ${Math.round(response_predicted_price)}</p>
             <p class="ltbc_desc">Grade: ${grade}</p>
             <p class="ltbc_desc ltbc_desc_right">🏍 Le Très Bon Coin</p>
           </div>
         </div>
       </div>
       <span class="ltbc_grade">${grade}</span>
-      <span class="ltbc_price">${Math.round(jsonResponse.predicted_price)}</span>
+      <span class="ltbc_price">${Math.round(response_predicted_price)}</span>
     </div>
   `;
 
@@ -170,6 +182,7 @@ function call_api(e,site_name, mileage, cylinders, bike_year, brand, model, pric
 
   // build ad object
   const ad = {
+    
     mileage: mileage,
     cylinders: cylinders,
     bike_year: bike_year,
@@ -236,7 +249,7 @@ function make_prediction() {
       const id = e.querySelector('a.title_link.item_link').href.replace('.html', '').split('/').pop();
       const image_element = e.querySelector('.img_content img');
       const image = image_element ? image_element.src : '';
-      const title = '';
+      const title = `${brand} ${model}`;
 
       // call the api then inject the card
       call_api(e, site_name, mileage, cylinders, bike_year, brand, model, price, id, image, title)
@@ -244,7 +257,7 @@ function make_prediction() {
     });
 
   } else if (location.hostname == "www.lacentrale.fr") {
-
+    //non useful comment
     console.log("☘️ la centrale");
     site_name = "la_centrale";
 
@@ -256,19 +269,19 @@ function make_prediction() {
         // retrieve the elements of the ad
         const mileageElt = e.getElementsByClassName('searchCard__mileage')[0];
         const mileage = mileageElt ? mileageElt.innerText.replace('km', '').replace(/\s/g, '') : '';
-        const cylinders = '';
+        const cylinders = '0';
         const bike_yearElt = e.getElementsByClassName('searchCard__year')[0];
-        const bike_year = bike_yearElt ? bike_yearElt.innerText.replace(' ', '') : '';
+        const bike_year = bike_yearElt ? bike_yearElt.innerText.replace(/\s/g, ' ') : '';
         const brandElt = e.querySelector('span[class="searchCard__makeModel"]');
         const brand = brandElt ? brandElt.innerText.toLowerCase().replace(/\s/g, ' ') : '';
-        const model = '';
+        const model = '0';
         const priceElt = e.querySelector('.searchCard__fieldPrice span');
         const price = priceElt ? priceElt.innerText.replace('€', '').replace(/\s/g, '') : '';
         const idElt = e.querySelector('a');
-        const id = idElt ? idElt.id : '';
+        const id = idElt ? idElt.id : '0';
         const image_element = e.querySelector('.searchCard__leftContainer img');
         const image = image_element && image_element != "" ? image_element.src : '';
-        const title = '';
+        const title = `${brand} ${model}`;
 
         console.log(`❤️ ❤️ ❤️ mileage ${mileage} cylinders ${cylinders} bike_year ${bike_year} brand ${brand} model ${model} price ${price} id ${id} image ${image}`)
 
