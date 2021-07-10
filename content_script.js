@@ -182,7 +182,7 @@ function call_api(e,site_name, mileage, cylinders, bike_year, brand, model, pric
 
   // build ad object
   const ad = {
-    
+
     mileage: mileage,
     cylinders: cylinders,
     bike_year: bike_year,
@@ -203,7 +203,7 @@ function call_api(e,site_name, mileage, cylinders, bike_year, brand, model, pric
   // const url = `https://tresboncoin-jteax5jyaq-ew.a.run.app/`;
   // const url = `https://tresboncoin-jteax5jyaq-ew.a.run.app/predict_price?mileage_=${mileage}&cc_=${cylinders}&year_=${bike_year}&brand_=${brand}&model_=${model}&price_=${price}&uniq_id_=${id}&image_=${image}&title_=${title}`;
   // const url = "https://tresboncoin-jteax5jyaq-ew.a.run.app/predict_price?uniq_id_=123&brand_=honda&cc_=125&year_=2020&mileage_=12345&price_=12345&model_=sh&title_=honda%20sh%20125";
-  const url = `https://tresboncoin-jteax5jyaq-ew.a.run.app/predict_price?uniq_id_=${id}&brand_=${brand}&cc_=${cylinders}&year_=${bike_year}&mileage_=${mileage}&price_=${price}&model_=${model}&title_=${title}`;
+  const url = `https://tresboncoin-build-jteax5jyaq-ew.a.run.app/predict_price?uniq_id_=${id}&brand_=${brand}&cc_=${cylinders}&year_=${bike_year}&mileage_=${mileage}&price_=${price}&model_=${model}&title_=${title}`;
   console.log(url);
 
   // retrieve prediction from api
@@ -307,7 +307,7 @@ function make_prediction() {
       const brand = e.getElementsByClassName('AdCardTitle-e546g7-0 igWjvr').innerText.toLowerCase();
       const model = e.getElementsByClassName('AdCardTitle-e546g7-0 igWjvr').innerText;
       const price = e.querySelector('span[class="_1hnil _1-TTU _35DXM"]').innerText.replace(' ','').replace('€','');
-      const id = e.querySelector('a.AdCard__AdCardLink-sc-1h74x40-0.XFxsO').href.replace('.htm*', '').split('/').pop();      
+      const id = e.querySelector('a.AdCard__AdCardLink-sc-1h74x40-0.XFxsO').href.replace('.htm*', '').split('/').pop();
       const image_element = e.querySelector('.indexstyles__WithLayoutCondition-teq0ic-0.jtKicE img');
       const image = image_element ? image_element.src : '';
       const title = '';
